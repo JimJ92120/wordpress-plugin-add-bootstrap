@@ -11,21 +11,32 @@
  * Requires PHP:        7.4
  */
 
-function render_bootstap_settings_page() {
-    echo <<<HTML
-    <div>
-        <h1>Bootstrap Settings</h1>
-        <p>Edit Bootstrap settings</p>
-    </div>
-HTML;
-}
+define('ADD_BOOTSTRAP', [
+    'options' => [
+        'page_slug' => 'bootstrap-settings',
+        'section_slug' => 'bootstrap_settings_section',
+    ],
+]);
 
 add_action('admin_menu', function() {
     add_theme_page(
         'Bootstrap Settings',
         'Bootstrap',
         'edit_theme_options',
-        'bootstrap-settings',
-        'render_bootstap_settings_page'
+        ADD_BOOTSTRAP['options']['page_slug'],
+        function () {
+            echo '<div>
+                <h1>'. get_admin_page_title() . '</h1>
+            </div>';
+        }
+    );
+});
+
+add_action('admin_init', function() {
+    add_settings_section(
+        ADD_BOOTSTRAP['options']['section_slug'],
+        'Settings',
+        '',
+        ADD_BOOTSTRAP['options']['page_slug']
     );
 });
