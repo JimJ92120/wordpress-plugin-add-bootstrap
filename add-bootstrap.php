@@ -22,6 +22,11 @@ define('ADD_BOOTSTRAP', [
         'enable_css' => 'bootstrap_enable_css',
         'enable_js' => 'bootstrap_enable_js',
     ],
+    'versions' => [
+        '3.3.7',
+        '4.6.2',
+        '5.0.2',
+    ],
 ]);
 
 add_action('admin_menu', function() {
