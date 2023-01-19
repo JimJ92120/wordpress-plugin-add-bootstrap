@@ -128,11 +128,21 @@ add_action('admin_init', function() {
 add_action('wp_enqueue_scripts', function () {
     $version = get_option(ADD_BOOTSTRAP['fields']['version']);
     $is_css_enabled = get_option(ADD_BOOTSTRAP['fields']['enable_css']);
+    $is_js_enabled = get_option(ADD_BOOTSTRAP['fields']['enable_js']);
 
     if ($is_css_enabled) {
         wp_enqueue_style(
             'bootstrap-css',
             'https://cdn.jsdelivr.net/npm/bootstrap@'. $version . '/dist/css/bootstrap.min.css',
+            [],
+            $version
+        );
+    }
+
+    if ($is_js_enabled) {
+        wp_enqueue_script(
+            'bootstrap-js',
+            'https://cdn.jsdelivr.net/npm/bootstrap@' . $version . '/dist/js/bootstrap.bundle.min.js',
             [],
             $version
         );
