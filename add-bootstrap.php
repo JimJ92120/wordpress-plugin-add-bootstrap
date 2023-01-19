@@ -20,6 +20,7 @@ define('ADD_BOOTSTRAP', [
     'fields' => [
         'version' => 'bootstrap_version',
         'enable_css' => 'bootstap_enable_css',
+        'enable_js' => 'bootstrap_enable_js',
     ],
 ]);
 
@@ -97,5 +98,15 @@ add_action('admin_init', function() {
         },
         ADD_BOOTSTRAP['options']['page_slug'],
         ADD_BOOTSTRAP['options']['section_slug']
+    );
+
+    register_setting(
+        ADD_BOOTSTRAP['options']['group_slug'],
+        ADD_BOOTSTRAP['fields']['enable_js'],
+        [
+            'type' => 'boolean',
+            'sanitize_callback' => 'bool',
+            'default' => false,
+        ]
     );
 });
