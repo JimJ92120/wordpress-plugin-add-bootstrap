@@ -124,3 +124,17 @@ add_action('admin_init', function() {
         ADD_BOOTSTRAP['options']['section_slug']
     );
 });
+
+add_action('wp_enqueue_scripts', function () {
+    $version = get_option(ADD_BOOTSTRAP['fields']['version']);
+    $is_css_enabled = get_option(ADD_BOOTSTRAP['fields']['enable_css']);
+
+    if ($is_css_enabled) {
+        wp_enqueue_style(
+            'bootstrap-css',
+            'https://cdn.jsdelivr.net/npm/bootstrap@'. $version . '/dist/css/bootstrap.min.css',
+            [],
+            $version
+        );
+    }
+});
