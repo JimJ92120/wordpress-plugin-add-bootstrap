@@ -22,6 +22,11 @@ define('ADD_BOOTSTRAP', [
         'enable_css' => 'bootstrap_enable_css',
         'enable_js' => 'bootstrap_enable_js',
     ],
+    'versions' => [
+        '3.3.7',
+        '4.6.2',
+        '5.0.2',
+    ],
 ]);
 
 add_action('admin_menu', function() {
@@ -56,7 +61,11 @@ add_action('admin_init', function() {
         ADD_BOOTSTRAP['fields']['version'],
         [
             'type' => 'string',
-            'sanitize_callback' => 'sanitize_text_field',
+            'sanitize_callback' => function($version) {
+                return in_array($version, ADD_BOOTSTRAP['versions'])
+                    ? $version
+                    : null;
+            },
             'default' => '',
         ]
     );
@@ -64,11 +73,24 @@ add_action('admin_init', function() {
         ADD_BOOTSTRAP['fields']['version'],
         'Version',
         function() {
+            $current_version = get_option(ADD_BOOTSTRAP['fields']['version']);
+
             printf(
-                '<input type="text" id="%1$s" name="%1$s" value="%2$s">',
+                '<select id="%1$s" name="%1$s" value="%2$s">',
                 ADD_BOOTSTRAP['fields']['version'],
-                get_option(ADD_BOOTSTRAP['fields']['version'])
+                $current_version
             );
+            echo '<option>Select a version</option>';
+
+            foreach(ADD_BOOTSTRAP['versions'] as $allowed_version) {
+                printf(
+                    '<option value="%1$s" %2$s>%1$s</option>',
+                    $allowed_version,
+                    $allowed_version === $current_version ? 'selected' : ''
+                );
+            }
+
+            echo '</select>';
         },
         ADD_BOOTSTRAP['options']['page_slug'],
         ADD_BOOTSTRAP['options']['section_slug']
@@ -127,24 +149,26 @@ add_action('admin_init', function() {
 
 add_action('wp_enqueue_scripts', function () {
     $version = get_option(ADD_BOOTSTRAP['fields']['version']);
-    $is_css_enabled = get_option(ADD_BOOTSTRAP['fields']['enable_css']);
-    $is_js_enabled = get_option(ADD_BOOTSTRAP['fields']['enable_js']);
 
-    if ($is_css_enabled) {
-        wp_enqueue_style(
-            'bootstrap-css',
-            'https://cdn.jsdelivr.net/npm/bootstrap@'. $version . '/dist/css/bootstrap.min.css',
-            [],
-            $version
-        );
-    }
+    if (in_array($version, ADD_BOOTSTRAP['versions'])) {
+        $is_css_enabled = get_option(ADD_BOOTSTRAP['fields']['enable_css']);
+        if ($is_css_enabled) {
+            wp_enqueue_style(
+                'bootstrap-css',
+                'https://cdn.jsdelivr.net/npm/bootstrap@'. $version . '/dist/css/bootstrap.min.css',
+                [],
+                $version
+            );
+        }
 
-    if ($is_js_enabled) {
-        wp_enqueue_script(
-            'bootstrap-js',
-            'https://cdn.jsdelivr.net/npm/bootstrap@' . $version . '/dist/js/bootstrap.bundle.min.js',
-            [],
-            $version
-        );
+        $is_js_enabled = get_option(ADD_BOOTSTRAP['fields']['enable_js']);
+        if ($is_js_enabled) {
+            wp_enqueue_script(
+                'bootstrap-js',
+                'https://cdn.jsdelivr.net/npm/bootstrap@' . $version . '/dist/js/bootstrap.bundle.min.js',
+                [],
+                $version
+            );
+        }
     }
 });
