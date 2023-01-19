@@ -31,6 +31,11 @@ add_action('admin_menu', function() {
         function () {
             echo '<div>
                 <h1>'. get_admin_page_title() . '</h1>
+                <form method="post" action="options.php">';
+                    settings_fields(ADD_BOOTSTRAP['options']['group_slug']);
+                    do_settings_sections(ADD_BOOTSTRAP['options']['page_slug']);
+                    submit_button();
+                echo '</form>
             </div>';
         }
     );
