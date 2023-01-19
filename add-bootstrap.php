@@ -53,4 +53,17 @@ add_action('admin_init', function() {
             'default' => '',
         ]
     );
+    add_settings_field(
+        ADD_BOOTSTRAP['fields']['version'],
+        'Version',
+        function() {
+            printf(
+                '<input type="text" id="%1$s" name="%1$s" value="%2$s">',
+                ADD_BOOTSTRAP['fields']['version'],
+                get_option(ADD_BOOTSTRAP['fields']['version'])
+            );
+        },
+        ADD_BOOTSTRAP['options']['page_slug'],
+        ADD_BOOTSTRAP['options']['section_slug']
+    );
 });
