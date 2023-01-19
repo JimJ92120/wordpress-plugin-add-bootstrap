@@ -19,7 +19,7 @@ define('ADD_BOOTSTRAP', [
     ],
     'fields' => [
         'version' => 'bootstrap_version',
-        'enable_css' => 'bootstap_enable_css',
+        'enable_css' => 'bootstrap_enable_css',
         'enable_js' => 'bootstrap_enable_js',
     ],
 ]);
@@ -79,7 +79,7 @@ add_action('admin_init', function() {
         ADD_BOOTSTRAP['fields']['enable_css'],
         [
             'type' => 'boolean',
-            'sanitize_callback' => 'bool',
+            'sanitize_callback' => 'rest_sanitize_boolean',
             'default' => true,
         ]
     );
@@ -90,9 +90,8 @@ add_action('admin_init', function() {
             $option_value = get_option(ADD_BOOTSTRAP['fields']['enable_css']);
 
             printf(
-                '<input type="checkbox" id="%1$s" name="%1$s" value="%2$s" %3$s>',
+                '<input type="checkbox" id="%1$s" name="%1$s" value="1" %2$s>',
                 ADD_BOOTSTRAP['fields']['enable_css'],
-                $option_value,
                 $option_value ? 'checked' : ''
             );
         },
@@ -105,7 +104,7 @@ add_action('admin_init', function() {
         ADD_BOOTSTRAP['fields']['enable_js'],
         [
             'type' => 'boolean',
-            'sanitize_callback' => 'bool',
+            'sanitize_callback' => 'rest_sanitize_boolean',
             'default' => false,
         ]
     );
@@ -116,9 +115,8 @@ add_action('admin_init', function() {
             $option_value = get_option(ADD_BOOTSTRAP['fields']['enable_js']);
 
             printf(
-                '<input type="checkbox" id="%1$s" name="%1$s" value="%2$s" %3$s>',
+                '<input type="checkbox" id="%1$s" name="%1$s" value="1" %2$s>',
                 ADD_BOOTSTRAP['fields']['enable_js'],
-                $option_value,
                 $option_value ? 'checked' : ''
             );
         },
