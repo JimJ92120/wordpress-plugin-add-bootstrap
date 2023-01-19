@@ -15,7 +15,11 @@ define('ADD_BOOTSTRAP', [
     'options' => [
         'page_slug' => 'bootstrap-settings',
         'section_slug' => 'bootstrap_settings_section',
+        'group_slug' => 'bootstap_settings',
     ],
+    'fields' => [
+        'version' => 'bootstrap_version',
+    ]
 ]);
 
 add_action('admin_menu', function() {
@@ -38,5 +42,15 @@ add_action('admin_init', function() {
         'Settings',
         '',
         ADD_BOOTSTRAP['options']['page_slug']
+    );
+
+    register_setting(
+        ADD_BOOTSTRAP['options']['group_slug'],
+        ADD_BOOTSTRAP['fields']['version'],
+        [
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default' => '',
+        ]
     );
 });
