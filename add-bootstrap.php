@@ -61,7 +61,11 @@ add_action('admin_init', function() {
         ADD_BOOTSTRAP['fields']['version'],
         [
             'type' => 'string',
-            'sanitize_callback' => 'sanitize_text_field',
+            'sanitize_callback' => function($version) {
+                return in_array($version, ADD_BOOTSTRAP['versions'])
+                    ? $version
+                    : null;
+            },
             'default' => '',
         ]
     );
