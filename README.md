@@ -27,6 +27,13 @@ Add Bootstrap CSS and JS to your site.
 
 2. Activate **Add Bootstrap** plugin.
 
+3. Go to **Appearances** > **Bootstrap** options page
+
+4. Configure **Bootstrap** settings
+
+![image](https://user-images.githubusercontent.com/57893611/213861491-d74bf833-3565-4f7d-87c4-81481a24e32c.png)
+
+
 ---
 ## Development
 
