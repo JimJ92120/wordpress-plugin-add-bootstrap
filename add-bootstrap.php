@@ -178,6 +178,8 @@ add_action('admin_enqueue_scripts', function () {
             $assets_file['version'],
             true
         );
+
+        wp_enqueue_style('wp-components');
     }
 });
 
