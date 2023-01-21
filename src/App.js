@@ -25,6 +25,7 @@ export default function App() {
   const [enableCSS, setEnableCSS] = useEntityProp("root", "site", OPTIONS_KEYS.enable_css);
   const [enableJS, setEnableJS] = useEntityProp("root", "site", OPTIONS_KEYS.enable_js);
   const [cssDependencies, setCSSDependencies] = useEntityProp("root", "site", OPTIONS_KEYS.css_dependencies);
+  const [jsDependencies, setJSDependencies] = useEntityProp("root", "site", OPTIONS_KEYS.js_dependencies);
 
   const [ isSuccessNoticeShown, showSuccessNotice ] = useState(false);
 
@@ -85,6 +86,15 @@ export default function App() {
           label="Enable JS"
           checked={enableJS ? enableJS : false}
           onChange={(newValue) => setEnableJS(newValue)}
+        />
+        <TextControl
+          label="JS dependencies"
+          help="Add comma-separated script slugs"
+          value={jsDependencies
+            ? jsDependencies
+            : ""
+          }
+          onChange={(newValue) => setJSDependencies(newValue)}
         />
       </div>
       <Button
