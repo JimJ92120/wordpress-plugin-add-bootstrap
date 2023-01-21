@@ -11,6 +11,7 @@
     "@wordpress/env": "^5.9.0"
   },
   "dependencies": {
+    "@wordpress/element": "^5.2.0",
     "@wordpress/scripts": "^25.2.0"
   }
 }
