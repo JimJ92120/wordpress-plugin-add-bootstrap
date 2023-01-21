@@ -8,6 +8,7 @@ import {
   CheckboxControl,
   SelectControl,
   Notice,
+  TextControl,
 } from "@wordpress/components";
 import { useState } from '@wordpress/element';
 
@@ -20,9 +21,11 @@ const {
 } = BOOTSTRAP_SETTINGS;
 
 export default function App() {
+  const [version, setVersion] = useEntityProp("root", "site", OPTIONS_KEYS.version);
   const [enableCSS, setEnableCSS] = useEntityProp("root", "site", OPTIONS_KEYS.enable_css);
   const [enableJS, setEnableJS] = useEntityProp("root", "site", OPTIONS_KEYS.enable_js);
-  const [version, setVersion] = useEntityProp("root", "site", OPTIONS_KEYS.version);
+  const [cssDependencies, setCSSDependencies] = useEntityProp("root", "site", OPTIONS_KEYS.css_dependencies);
+
   const [ isSuccessNoticeShown, showSuccessNotice ] = useState(false);
 
   const { saveEditedEntityRecord } = useDispatch(coreStore);
@@ -31,6 +34,7 @@ export default function App() {
       [OPTIONS_KEYS.enable_css]: enableCSS,
       [OPTIONS_KEYS.enable_js]: enableJS,
       [OPTIONS_KEYS.version]: version,
+      [OPTIONS_KEYS.css_dependencies]: cssDependencies,
     });
   };
 
@@ -67,6 +71,15 @@ export default function App() {
           label="Enable CSS"
           checked={enableCSS ? enableJS : false}
           onChange={(newValue) => setEnableCSS(newValue)}
+        />
+        <TextControl
+          label="CSS dependencies"
+          help="Add comma-separated style slugs"
+          value={cssDependencies
+            ? cssDependencies
+            : ""
+          }
+          onChange={(newValue) => setCSSDependencies(newValue)}
         />
         <CheckboxControl
           label="Enable JS"
