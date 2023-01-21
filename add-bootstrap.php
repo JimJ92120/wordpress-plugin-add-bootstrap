@@ -156,15 +156,16 @@ add_action('wp_enqueue_scripts', function () {
 
     if (in_array($version, ADD_BOOTSTRAP['versions'])) {
         $is_css_enabled = get_option(ADD_BOOTSTRAP['fields']['enable_css']);
-        $css_dependencies = get_option(ADD_BOOTSTRAP['fields']['css_dependencies']);
-        
-        if (empty($css_dependencies)) {
-            $css_dependencies = [];
-        } else {
-            $css_dependencies = explode(", ", $css_dependencies);
-        }
 
         if ($is_css_enabled) {
+            $css_dependencies = get_option(ADD_BOOTSTRAP['fields']['css_dependencies']);
+        
+            if (empty($css_dependencies)) {
+                $css_dependencies = [];
+            } else {
+                $css_dependencies = explode(",", trim($css_dependencies));
+            }
+
             wp_enqueue_style(
                 'bootstrap-css',
                 'https://cdn.jsdelivr.net/npm/bootstrap@'. $version . '/dist/css/bootstrap.min.css',
@@ -181,7 +182,13 @@ add_action('wp_enqueue_scripts', function () {
             $script_url = $is_bootstrap_4_or_above
                 ? 'https://cdn.jsdelivr.net/npm/bootstrap@' . $version . '/dist/js/bootstrap.bundle.min.js'
                 : 'https://cdn.jsdelivr.net/npm/bootstrap@' . $version . '/dist/js/bootstrap.min.js';
-            $required_dependencies = [];
+            $js_dependencies = get_option(ADD_BOOTSTRAP['fields']['js_dependencies']);
+        
+            if (empty($js_dependencies)) {
+                $js_dependencies = [];
+            } else {
+                $js_dependencies = explode(",", trim($js_dependencies));
+            }
 
             if (!$is_bootstrap_5_or_above) {
                 $jquery_url = $is_bootstrap_4_or_above
@@ -196,13 +203,13 @@ add_action('wp_enqueue_scripts', function () {
                     true
                 );
 
-                $required_dependencies[] = 'bootstrap-jquery';
+                $js_dependencies[] = 'bootstrap-jquery';
             }
 
             wp_enqueue_script(
                 'bootstrap-js',
                 $script_url,
-                $required_dependencies,
+                $js_dependencies,
                 $version
             );
         }
