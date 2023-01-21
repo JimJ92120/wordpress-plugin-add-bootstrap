@@ -136,10 +136,34 @@ add_action('wp_enqueue_scripts', function () {
 
         $is_js_enabled = get_option(ADD_BOOTSTRAP['fields']['enable_js']);
         if ($is_js_enabled) {
+            $is_bootstrap_4_or_above = version_compare($version, '4.0.0', '>=');
+            $is_bootstrap_5_or_above = version_compare($version, '5.0.0', '>=');
+
+            $script_url = $is_bootstrap_4_or_above
+                ? 'https://cdn.jsdelivr.net/npm/bootstrap@' . $version . '/dist/js/bootstrap.bundle.min.js'
+                : 'https://cdn.jsdelivr.net/npm/bootstrap@' . $version . '/dist/js/bootstrap.min.js';
+            $required_dependencies = [];
+
+            if (!$is_bootstrap_5_or_above) {
+                $jquery_url = $is_bootstrap_4_or_above
+                    ? 'https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js'
+                    : 'https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js';
+
+                wp_enqueue_script(
+                    'bootstrap-jquery',
+                    $jquery_url,
+                    [],
+                    null,
+                    true
+                );
+
+                $required_dependencies[] = 'bootstrap-jquery';
+            }
+
             wp_enqueue_script(
                 'bootstrap-js',
-                'https://cdn.jsdelivr.net/npm/bootstrap@' . $version . '/dist/js/bootstrap.bundle.min.js',
-                [],
+                $script_url,
+                $required_dependencies,
                 $version
             );
         }
