@@ -49,14 +49,7 @@ add_action('admin_menu', function() {
     );
 });
 
-add_action('admin_init', function() {
-    add_settings_section(
-        ADD_BOOTSTRAP['options']['section_slug'],
-        'Settings',
-        '',
-        ADD_BOOTSTRAP['options']['page_slug']
-    );
-
+function add_bootstrap_register_settings_fields() {
     register_setting(
         ADD_BOOTSTRAP['options']['group_slug'],
         ADD_BOOTSTRAP['fields']['version'],
@@ -70,6 +63,38 @@ add_action('admin_init', function() {
             'default' => '',
         ]
     );
+
+    register_setting(
+        ADD_BOOTSTRAP['options']['group_slug'],
+        ADD_BOOTSTRAP['fields']['enable_css'],
+        [
+            'type' => 'boolean',
+            'sanitize_callback' => 'rest_sanitize_boolean',
+            'default' => true,
+        ]
+    );
+
+    register_setting(
+        ADD_BOOTSTRAP['options']['group_slug'],
+        ADD_BOOTSTRAP['fields']['enable_js'],
+        [
+            'type' => 'boolean',
+            'sanitize_callback' => 'rest_sanitize_boolean',
+            'default' => false,
+        ]
+    );
+}
+
+add_action('admin_init', function() {
+    add_bootstrap_register_settings_fields();
+
+    add_settings_section(
+        ADD_BOOTSTRAP['options']['section_slug'],
+        'Settings',
+        '',
+        ADD_BOOTSTRAP['options']['page_slug']
+    );
+
     add_settings_field(
         ADD_BOOTSTRAP['fields']['version'],
         'Version',
@@ -97,15 +122,6 @@ add_action('admin_init', function() {
         ADD_BOOTSTRAP['options']['section_slug']
     );
 
-    register_setting(
-        ADD_BOOTSTRAP['options']['group_slug'],
-        ADD_BOOTSTRAP['fields']['enable_css'],
-        [
-            'type' => 'boolean',
-            'sanitize_callback' => 'rest_sanitize_boolean',
-            'default' => true,
-        ]
-    );
     add_settings_field(
         ADD_BOOTSTRAP['fields']['enable_css'],
         'Enable CSS',
@@ -122,15 +138,6 @@ add_action('admin_init', function() {
         ADD_BOOTSTRAP['options']['section_slug']
     );
 
-    register_setting(
-        ADD_BOOTSTRAP['options']['group_slug'],
-        ADD_BOOTSTRAP['fields']['enable_js'],
-        [
-            'type' => 'boolean',
-            'sanitize_callback' => 'rest_sanitize_boolean',
-            'default' => false,
-        ]
-    );
     add_settings_field(
         ADD_BOOTSTRAP['fields']['enable_js'],
         'Enable JS',
