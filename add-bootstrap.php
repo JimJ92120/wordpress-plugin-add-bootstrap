@@ -12,7 +12,7 @@
  */
 
 define('ADD_BOOTSTRAP', [
-    'options' => [
+    'options_page' => [
         'page_slug' => 'bootstrap-settings',
         'section_slug' => 'bootstrap_settings_section',
         'group_slug' => 'bootstap_settings',
@@ -41,7 +41,7 @@ add_action('admin_menu', function() {
         'Bootstrap Settings',
         'Bootstrap',
         'edit_theme_options',
-        ADD_BOOTSTRAP['options']['page_slug'],
+        ADD_BOOTSTRAP['options_page']['page_slug'],
         function () {
             echo '<div>
                 <h1>'. get_admin_page_title() . '</h1>
@@ -53,7 +53,7 @@ add_action('admin_menu', function() {
 
 function add_bootstrap_register_settings_fields() {
     register_setting(
-        ADD_BOOTSTRAP['options']['group_slug'],
+        ADD_BOOTSTRAP['options_page']['group_slug'],
         ADD_BOOTSTRAP['fields']['version'],
         [
             'type' => 'string',
@@ -68,7 +68,7 @@ function add_bootstrap_register_settings_fields() {
     );
 
     register_setting(
-        ADD_BOOTSTRAP['options']['group_slug'],
+        ADD_BOOTSTRAP['options_page']['group_slug'],
         ADD_BOOTSTRAP['fields']['enable_css'],
         [
             'type' => 'boolean',
@@ -79,7 +79,7 @@ function add_bootstrap_register_settings_fields() {
     );
 
     register_setting(
-        ADD_BOOTSTRAP['options']['group_slug'],
+        ADD_BOOTSTRAP['options_page']['group_slug'],
         ADD_BOOTSTRAP['fields']['enable_js'],
         [
             'type' => 'boolean',
@@ -100,7 +100,7 @@ add_action('rest_api_init', function () {
 
 add_action('admin_enqueue_scripts', function () {
     $current_screen = get_current_screen();
-    $options_page_id = 'appearance_page_' . ADD_BOOTSTRAP['options']['page_slug'];
+    $options_page_id = 'appearance_page_' . ADD_BOOTSTRAP['options_page']['page_slug'];
 
     if ($current_screen instanceof \WP_Screen
         &&  $options_page_id === $current_screen->id
