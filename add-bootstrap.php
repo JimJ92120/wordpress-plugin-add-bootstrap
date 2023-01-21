@@ -38,24 +38,13 @@ add_action('admin_menu', function() {
         function () {
             echo '<div>
                 <h1>'. get_admin_page_title() . '</h1>
-                <form method="post" action="options.php">';
-                    settings_fields(ADD_BOOTSTRAP['options']['group_slug']);
-                    do_settings_sections(ADD_BOOTSTRAP['options']['page_slug']);
-                    submit_button();
-                echo '</form>
+                <div id="bootstrap-settings"></div>
             </div>';
         }
     );
 });
 
-add_action('admin_init', function() {
-    add_settings_section(
-        ADD_BOOTSTRAP['options']['section_slug'],
-        'Settings',
-        '',
-        ADD_BOOTSTRAP['options']['page_slug']
-    );
-
+function add_bootstrap_register_settings_fields() {
     register_setting(
         ADD_BOOTSTRAP['options']['group_slug'],
         ADD_BOOTSTRAP['fields']['version'],
@@ -67,33 +56,8 @@ add_action('admin_init', function() {
                     : null;
             },
             'default' => '',
+            'show_in_rest' => true,
         ]
-    );
-    add_settings_field(
-        ADD_BOOTSTRAP['fields']['version'],
-        'Version',
-        function() {
-            $current_version = get_option(ADD_BOOTSTRAP['fields']['version']);
-
-            printf(
-                '<select id="%1$s" name="%1$s" value="%2$s">',
-                ADD_BOOTSTRAP['fields']['version'],
-                $current_version
-            );
-            echo '<option>Select a version</option>';
-
-            foreach(ADD_BOOTSTRAP['versions'] as $allowed_version) {
-                printf(
-                    '<option value="%1$s" %2$s>%1$s</option>',
-                    $allowed_version,
-                    $allowed_version === $current_version ? 'selected' : ''
-                );
-            }
-
-            echo '</select>';
-        },
-        ADD_BOOTSTRAP['options']['page_slug'],
-        ADD_BOOTSTRAP['options']['section_slug']
     );
 
     register_setting(
@@ -103,22 +67,8 @@ add_action('admin_init', function() {
             'type' => 'boolean',
             'sanitize_callback' => 'rest_sanitize_boolean',
             'default' => true,
+            'show_in_rest' => true,
         ]
-    );
-    add_settings_field(
-        ADD_BOOTSTRAP['fields']['enable_css'],
-        'Enable CSS',
-        function() {
-            $option_value = get_option(ADD_BOOTSTRAP['fields']['enable_css']);
-
-            printf(
-                '<input type="checkbox" id="%1$s" name="%1$s" value="1" %2$s>',
-                ADD_BOOTSTRAP['fields']['enable_css'],
-                $option_value ? 'checked' : ''
-            );
-        },
-        ADD_BOOTSTRAP['options']['page_slug'],
-        ADD_BOOTSTRAP['options']['section_slug']
     );
 
     register_setting(
@@ -128,23 +78,46 @@ add_action('admin_init', function() {
             'type' => 'boolean',
             'sanitize_callback' => 'rest_sanitize_boolean',
             'default' => false,
+            'show_in_rest' => true,
         ]
     );
-    add_settings_field(
-        ADD_BOOTSTRAP['fields']['enable_js'],
-        'Enable JS',
-        function() {
-            $option_value = get_option(ADD_BOOTSTRAP['fields']['enable_js']);
+}
 
-            printf(
-                '<input type="checkbox" id="%1$s" name="%1$s" value="1" %2$s>',
-                ADD_BOOTSTRAP['fields']['enable_js'],
-                $option_value ? 'checked' : ''
-            );
-        },
-        ADD_BOOTSTRAP['options']['page_slug'],
-        ADD_BOOTSTRAP['options']['section_slug']
-    );
+add_action('admin_init', function () {
+    add_bootstrap_register_settings_fields();
+});
+
+add_action('rest_api_init', function () {
+    add_bootstrap_register_settings_fields();
+});
+
+add_action('admin_enqueue_scripts', function () {
+    $current_screen = get_current_screen();
+    $options_page_id = 'appearance_page_' . ADD_BOOTSTRAP['options']['page_slug'];
+
+    if ($current_screen instanceof \WP_Screen
+        &&  $options_page_id === $current_screen->id
+    ) {
+        $assets_file = require_once(plugin_dir_path(__FILE__ ) . 'build/index.asset.php');
+
+        wp_enqueue_script(
+            'bootstrap-settings-admin-js',
+            plugin_dir_url(__FILE__) . 'build/index.js',
+            $assets_file['dependencies'],
+            $assets_file['version'],
+            true
+        );
+        wp_localize_script(
+            'bootstrap-settings-admin-js',
+            'bootstrap_settings',
+            [
+                'fields' => ADD_BOOTSTRAP['fields'],
+                'versions' => ADD_BOOTSTRAP['versions'],
+            ]
+        );
+
+        wp_enqueue_style('wp-components');
+    }
 });
 
 add_action('wp_enqueue_scripts', function () {
