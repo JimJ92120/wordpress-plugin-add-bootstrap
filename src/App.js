@@ -7,7 +7,9 @@ import {
   Button,
   CheckboxControl,
   SelectControl,
+  Notice,
 } from "@wordpress/components";
+import { useState } from '@wordpress/element';
 
 const {
   bootstrap_settings: BOOTSTRAP_SETTINGS,
@@ -21,10 +23,11 @@ export default function App() {
   const [enableCSS, setEnableCSS] = useEntityProp("root", "site", OPTIONS_KEYS.enable_css);
   const [enableJS, setEnableJS] = useEntityProp("root", "site", OPTIONS_KEYS.enable_js);
   const [version, setVersion] = useEntityProp("root", "site", OPTIONS_KEYS.version);
+  const [ isSuccessNoticeShown, showSuccessNotice ] = useState(false);
 
   const { saveEditedEntityRecord } = useDispatch(coreStore);
   const saveOptions = () => {
-    saveEditedEntityRecord("root", "site", undefined, {
+    return saveEditedEntityRecord("root", "site", undefined, {
       [OPTIONS_KEYS.enable_css]: enableCSS,
       [OPTIONS_KEYS.enable_js]: enableJS,
       [OPTIONS_KEYS.version]: version,
@@ -33,6 +36,15 @@ export default function App() {
 
   return (
     <div>
+      {isSuccessNoticeShown && (
+        <Notice
+          status="success"
+          onDismiss={() => showSuccessNotice(false)}
+          onRemove={() => showSuccessNotice(false)}
+        >
+          Settings saved!
+        </Notice>
+      )}
       <h2>Settings</h2>
       <div>
         <SelectControl
@@ -64,8 +76,10 @@ export default function App() {
       </div>
       <Button
         variant="primary"
-        onClick={() => saveOptions()}
-      >Save</Button>
+        onClick={() => saveOptions()
+          .then(() => showSuccessNotice(true))
+        }
+      >Save settings</Button>
     </div>
   );
 }
