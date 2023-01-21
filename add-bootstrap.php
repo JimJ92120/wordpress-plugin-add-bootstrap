@@ -156,7 +156,6 @@ add_action('wp_enqueue_scripts', function () {
 
     if (in_array($version, ADD_BOOTSTRAP['versions'])) {
         $is_css_enabled = get_option(ADD_BOOTSTRAP['fields']['enable_css']);
-
         if ($is_css_enabled) {
             $css_dependencies = get_option(ADD_BOOTSTRAP['fields']['css_dependencies']);
         
