@@ -97,33 +97,6 @@ add_action('admin_init', function () {
         '',
         ADD_BOOTSTRAP['options']['page_slug']
     );
-
-    add_settings_field(
-        ADD_BOOTSTRAP['fields']['version'],
-        'Version',
-        function() {
-            $current_version = get_option(ADD_BOOTSTRAP['fields']['version']);
-
-            printf(
-                '<select id="%1$s" name="%1$s" value="%2$s">',
-                ADD_BOOTSTRAP['fields']['version'],
-                $current_version
-            );
-            echo '<option>Select a version</option>';
-
-            foreach(ADD_BOOTSTRAP['versions'] as $allowed_version) {
-                printf(
-                    '<option value="%1$s" %2$s>%1$s</option>',
-                    $allowed_version,
-                    $allowed_version === $current_version ? 'selected' : ''
-                );
-            }
-
-            echo '</select>';
-        },
-        ADD_BOOTSTRAP['options']['page_slug'],
-        ADD_BOOTSTRAP['options']['section_slug']
-    );
 });
 
 add_action('rest_api_init', function () {
