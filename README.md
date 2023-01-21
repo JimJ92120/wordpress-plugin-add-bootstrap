@@ -61,3 +61,10 @@ npm install
 npm run wp-env start
 ```
 
+---
+## Credits
+
+- [Bootstrap](https://getbootstrap.com/)
+- [WordPress](https://github.com/WordPress/)
+- [StackOverflow](https://stackoverflow.com/)
+
