@@ -12,7 +12,7 @@
  */
 
 define('ADD_BOOTSTRAP', [
-    'options' => [
+    'options_page' => [
         'page_slug' => 'bootstrap-settings',
         'section_slug' => 'bootstrap_settings_section',
         'group_slug' => 'bootstap_settings',
@@ -21,6 +21,8 @@ define('ADD_BOOTSTRAP', [
         'version' => 'bootstrap_version',
         'enable_css' => 'bootstrap_enable_css',
         'enable_js' => 'bootstrap_enable_js',
+        'css_dependencies' => 'bootstrap_css_dependencies',
+        'js_dependencies' => 'bootstrap_js_dependencies',
     ],
     'versions' => [
         '3.3.7',
@@ -41,7 +43,7 @@ add_action('admin_menu', function() {
         'Bootstrap Settings',
         'Bootstrap',
         'edit_theme_options',
-        ADD_BOOTSTRAP['options']['page_slug'],
+        ADD_BOOTSTRAP['options_page']['page_slug'],
         function () {
             echo '<div>
                 <h1>'. get_admin_page_title() . '</h1>
@@ -53,7 +55,7 @@ add_action('admin_menu', function() {
 
 function add_bootstrap_register_settings_fields() {
     register_setting(
-        ADD_BOOTSTRAP['options']['group_slug'],
+        ADD_BOOTSTRAP['options_page']['group_slug'],
         ADD_BOOTSTRAP['fields']['version'],
         [
             'type' => 'string',
@@ -68,7 +70,7 @@ function add_bootstrap_register_settings_fields() {
     );
 
     register_setting(
-        ADD_BOOTSTRAP['options']['group_slug'],
+        ADD_BOOTSTRAP['options_page']['group_slug'],
         ADD_BOOTSTRAP['fields']['enable_css'],
         [
             'type' => 'boolean',
@@ -79,12 +81,34 @@ function add_bootstrap_register_settings_fields() {
     );
 
     register_setting(
-        ADD_BOOTSTRAP['options']['group_slug'],
+        ADD_BOOTSTRAP['options_page']['group_slug'],
         ADD_BOOTSTRAP['fields']['enable_js'],
         [
             'type' => 'boolean',
             'sanitize_callback' => 'rest_sanitize_boolean',
             'default' => false,
+            'show_in_rest' => true,
+        ]
+    );
+
+    register_setting(
+        ADD_BOOTSTRAP['options_page']['group_slug'],
+        ADD_BOOTSTRAP['fields']['css_dependencies'],
+        [
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default' => '',
+            'show_in_rest' => true,
+        ]
+    );
+
+    register_setting(
+        ADD_BOOTSTRAP['options_page']['group_slug'],
+        ADD_BOOTSTRAP['fields']['js_dependencies'],
+        [
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default' => '',
             'show_in_rest' => true,
         ]
     );
@@ -100,7 +124,7 @@ add_action('rest_api_init', function () {
 
 add_action('admin_enqueue_scripts', function () {
     $current_screen = get_current_screen();
-    $options_page_id = 'appearance_page_' . ADD_BOOTSTRAP['options']['page_slug'];
+    $options_page_id = 'appearance_page_' . ADD_BOOTSTRAP['options_page']['page_slug'];
 
     if ($current_screen instanceof \WP_Screen
         &&  $options_page_id === $current_screen->id
@@ -133,10 +157,18 @@ add_action('wp_enqueue_scripts', function () {
     if (in_array($version, ADD_BOOTSTRAP['versions'])) {
         $is_css_enabled = get_option(ADD_BOOTSTRAP['fields']['enable_css']);
         if ($is_css_enabled) {
+            $css_dependencies = get_option(ADD_BOOTSTRAP['fields']['css_dependencies']);
+        
+            if (empty($css_dependencies)) {
+                $css_dependencies = [];
+            } else {
+                $css_dependencies = explode(",", trim($css_dependencies));
+            }
+
             wp_enqueue_style(
                 'bootstrap-css',
                 'https://cdn.jsdelivr.net/npm/bootstrap@'. $version . '/dist/css/bootstrap.min.css',
-                [],
+                $css_dependencies,
                 $version
             );
         }
@@ -149,7 +181,13 @@ add_action('wp_enqueue_scripts', function () {
             $script_url = $is_bootstrap_4_or_above
                 ? 'https://cdn.jsdelivr.net/npm/bootstrap@' . $version . '/dist/js/bootstrap.bundle.min.js'
                 : 'https://cdn.jsdelivr.net/npm/bootstrap@' . $version . '/dist/js/bootstrap.min.js';
-            $required_dependencies = [];
+            $js_dependencies = get_option(ADD_BOOTSTRAP['fields']['js_dependencies']);
+        
+            if (empty($js_dependencies)) {
+                $js_dependencies = [];
+            } else {
+                $js_dependencies = explode(",", trim($js_dependencies));
+            }
 
             if (!$is_bootstrap_5_or_above) {
                 $jquery_url = $is_bootstrap_4_or_above
@@ -164,13 +202,13 @@ add_action('wp_enqueue_scripts', function () {
                     true
                 );
 
-                $required_dependencies[] = 'bootstrap-jquery';
+                $js_dependencies[] = 'bootstrap-jquery';
             }
 
             wp_enqueue_script(
                 'bootstrap-js',
                 $script_url,
-                $required_dependencies,
+                $js_dependencies,
                 $version
             );
         }
