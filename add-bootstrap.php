@@ -126,22 +126,6 @@ add_action('admin_init', function () {
     );
 
     add_settings_field(
-        ADD_BOOTSTRAP['fields']['enable_css'],
-        'Enable CSS',
-        function() {
-            $option_value = get_option(ADD_BOOTSTRAP['fields']['enable_css']);
-
-            printf(
-                '<input type="checkbox" id="%1$s" name="%1$s" value="1" %2$s>',
-                ADD_BOOTSTRAP['fields']['enable_css'],
-                $option_value ? 'checked' : ''
-            );
-        },
-        ADD_BOOTSTRAP['options']['page_slug'],
-        ADD_BOOTSTRAP['options']['section_slug']
-    );
-
-    add_settings_field(
         ADD_BOOTSTRAP['fields']['enable_js'],
         'Enable JS',
         function() {
