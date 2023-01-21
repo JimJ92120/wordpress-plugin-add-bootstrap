@@ -147,6 +147,25 @@ add_action('admin_init', function() {
     );
 });
 
+add_action('admin_enqueue_scripts', function () {
+    $current_screen = get_current_screen();
+    $options_page_id = 'appearance_page_' . ADD_BOOTSTRAP['options']['page_slug'];
+
+    if ($current_screen instanceof \WP_Screen
+        &&  $options_page_id === $current_screen->id
+    ) {
+        $assets_file = require_once(plugin_dir_path(__FILE__ ) . 'build/index.asset.php');
+
+        wp_enqueue_script(
+            'bootstrap-settings-admin-js',
+            plugin_dir_url(__FILE__) . 'build/index.js',
+            $assets_file['dependencies'],
+            $assets_file['version'],
+            true
+        );
+    }
+});
+
 add_action('wp_enqueue_scripts', function () {
     $version = get_option(ADD_BOOTSTRAP['fields']['version']);
 
