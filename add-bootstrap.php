@@ -61,6 +61,7 @@ function add_bootstrap_register_settings_fields() {
                     : null;
             },
             'default' => '',
+            'show_in_rest' => true,
         ]
     );
 
@@ -71,6 +72,7 @@ function add_bootstrap_register_settings_fields() {
             'type' => 'boolean',
             'sanitize_callback' => 'rest_sanitize_boolean',
             'default' => true,
+            'show_in_rest' => true,
         ]
     );
 
@@ -81,11 +83,12 @@ function add_bootstrap_register_settings_fields() {
             'type' => 'boolean',
             'sanitize_callback' => 'rest_sanitize_boolean',
             'default' => false,
+            'show_in_rest' => true,
         ]
     );
 }
 
-add_action('admin_init', function() {
+add_action('admin_init', function () {
     add_bootstrap_register_settings_fields();
 
     add_settings_section(
@@ -153,6 +156,10 @@ add_action('admin_init', function() {
         ADD_BOOTSTRAP['options']['page_slug'],
         ADD_BOOTSTRAP['options']['section_slug']
     );
+});
+
+add_action('rest_api_init', function () {
+    add_bootstrap_register_settings_fields();
 });
 
 add_action('admin_enqueue_scripts', function () {
