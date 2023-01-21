@@ -2,6 +2,20 @@
 
 Add Bootstrap CSS and JS to your site.
 
+Current available **Bootstrap** versions:
+- **Bootstrap 3**
+  - `3.3.7`
+  - `3.4.1`
+- **Bootstrap 4**
+  - `4.4.1`
+  - `4.5.3`
+  - `4.6.2`
+- **Bootstrap 5**
+  - `5.0.2`
+  - `5.1.3`
+  - `5.2.3`
+
+
 ---
 ## Requirements
 
