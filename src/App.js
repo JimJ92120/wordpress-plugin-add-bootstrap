@@ -9,27 +9,24 @@ import {
   SelectControl,
 } from "@wordpress/components";
 
-const OPTIONS_KEYS = {
-  version: "bootstrap_version",
-  enableCSS: "bootstrap_enable_css",
-  enableJS: "bootstrap_enable_js",
-};
-const ALLOWED_VERSIONS = [
-  "3.3.7",
-  "4.6.2",
-  "5.0.2",
-];
+const {
+  bootstrap_settings: BOOTSTRAP_SETTINGS,
+} = window;
+const {
+  fields: OPTIONS_KEYS,
+  versions: ALLOWED_VERSIONS,
+} = BOOTSTRAP_SETTINGS;
 
 export default function App() {
-  const [enableCSS, setEnableCSS] = useEntityProp("root", "site", OPTIONS_KEYS.enableCSS);
-  const [enableJS, setEnableJS] = useEntityProp("root", "site", OPTIONS_KEYS.enableJS);
+  const [enableCSS, setEnableCSS] = useEntityProp("root", "site", OPTIONS_KEYS.enable_css);
+  const [enableJS, setEnableJS] = useEntityProp("root", "site", OPTIONS_KEYS.enable_js);
   const [version, setVersion] = useEntityProp("root", "site", OPTIONS_KEYS.version);
 
   const { saveEditedEntityRecord } = useDispatch(coreStore);
   const saveOptions = () => {
     saveEditedEntityRecord("root", "site", undefined, {
-      [OPTIONS_KEYS.enableCSS]: enableCSS,
-      [OPTIONS_KEYS.enableJS]: enableJS,
+      [OPTIONS_KEYS.enable_css]: enableCSS,
+      [OPTIONS_KEYS.enable_js]: enableJS,
       [OPTIONS_KEYS.version]: version,
     });
   };

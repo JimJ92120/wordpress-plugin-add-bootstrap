@@ -107,6 +107,14 @@ add_action('admin_enqueue_scripts', function () {
             $assets_file['version'],
             true
         );
+        wp_localize_script(
+            'bootstrap-settings-admin-js',
+            'bootstrap_settings',
+            [
+                'fields' => ADD_BOOTSTRAP['fields'],
+                'versions' => ADD_BOOTSTRAP['versions'],
+            ]
+        );
 
         wp_enqueue_style('wp-components');
     }
