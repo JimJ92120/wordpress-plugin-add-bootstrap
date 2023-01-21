@@ -21,6 +21,7 @@ define('ADD_BOOTSTRAP', [
         'version' => 'bootstrap_version',
         'enable_css' => 'bootstrap_enable_css',
         'enable_js' => 'bootstrap_enable_js',
+        'css_dependencies' => 'bootstrap_css_dependencies',
     ],
     'versions' => [
         '3.3.7',
@@ -85,6 +86,17 @@ function add_bootstrap_register_settings_fields() {
             'type' => 'boolean',
             'sanitize_callback' => 'rest_sanitize_boolean',
             'default' => false,
+            'show_in_rest' => true,
+        ]
+    );
+
+    register_setting(
+        ADD_BOOTSTRAP['options_page']['group_slug'],
+        ADD_BOOTSTRAP['fields']['css_dependencies'],
+        [
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default' => '',
             'show_in_rest' => true,
         ]
     );
