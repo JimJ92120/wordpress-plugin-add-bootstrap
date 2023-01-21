@@ -39,11 +39,6 @@ add_action('admin_menu', function() {
             echo '<div>
                 <h1>'. get_admin_page_title() . '</h1>
                 <div id="bootstrap-settings"></div>
-                <form method="post" action="options.php">';
-                    settings_fields(ADD_BOOTSTRAP['options']['group_slug']);
-                    do_settings_sections(ADD_BOOTSTRAP['options']['page_slug']);
-                    submit_button();
-                echo '</form>
             </div>';
         }
     );
@@ -90,13 +85,6 @@ function add_bootstrap_register_settings_fields() {
 
 add_action('admin_init', function () {
     add_bootstrap_register_settings_fields();
-
-    add_settings_section(
-        ADD_BOOTSTRAP['options']['section_slug'],
-        'Settings',
-        '',
-        ADD_BOOTSTRAP['options']['page_slug']
-    );
 });
 
 add_action('rest_api_init', function () {
